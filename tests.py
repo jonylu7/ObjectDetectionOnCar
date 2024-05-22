@@ -1,8 +1,8 @@
 import config
 import torch
 import unittest
-import utils
-from models import YOLOv1, YOLOv1ResNet
+import util
+from model import YOLOv1, YOLOv1ResNet
 from loss import SumSquaredErrorLoss
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -31,10 +31,10 @@ class TestLossFunction(unittest.TestCase):
 
     def test_small_positive_iou(self):
         a = torch.zeros((1, 1, 1, TestLossFunction.SHAPE[-1]))
-        a[0, 0, 0, config.C:config.C+5] = torch.tensor([1, 1, 1, 1, 1])
-        a[0, 0, 0, config.C+5:config.C+10] = torch.tensor([0.5, 0.5, 1, 1, 1])
+        a[0, 0, 0, config.C:config.C + 5] = torch.tensor([1, 1, 1, 1, 1])
+        a[0, 0, 0, config.C + 5:config.C + 10] = torch.tensor([0.5, 0.5, 1, 1, 1])
         b = torch.zeros((1, 1, 1, TestLossFunction.SHAPE[-1]))
-        b[0, 0, 0, config.C:config.C+5] = torch.tensor([0.5, 0.5, 1, 1, 1])
+        b[0, 0, 0, config.C:config.C + 5] = torch.tensor([0.5, 0.5, 1, 1, 1])
         print(utils.get_iou(a, b))
 
     def test_small_negative_iou(self):
@@ -88,8 +88,8 @@ class TestLossFunction(unittest.TestCase):
 
     def test_single_bbox(self):
         truth = torch.zeros(TestLossFunction.SHAPE)
-        truth[0, 0, 0, 4] = 1.0        # Bbox confidence
-        truth[0, 0, 0, -1] = 1.0       # Class
+        truth[0, 0, 0, 4] = 1.0  # Bbox confidence
+        truth[0, 0, 0, -1] = 1.0  # Class
         pred = torch.zeros(TestLossFunction.SHAPE)
         pred[0, 0, 0, 0:5] = torch.ones(5)
         loss_func = SumSquaredErrorLoss()
@@ -99,9 +99,9 @@ class TestLossFunction(unittest.TestCase):
 
     def test_double_bbox(self):
         truth = torch.zeros(TestLossFunction.SHAPE)
-        truth[0, 0, 0, 4] = 1.0        # Bbox confidences
+        truth[0, 0, 0, 4] = 1.0  # Bbox confidences
         truth[0, 0, 0, 9] = 1.0
-        truth[0, 0, 0, -1] = 1.0       # Class
+        truth[0, 0, 0, -1] = 1.0  # Class
         pred = torch.zeros(TestLossFunction.SHAPE)
         pred[0, 0, 0, 0:10] = torch.ones(10)
         loss_func = SumSquaredErrorLoss()

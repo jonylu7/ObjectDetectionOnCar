@@ -1,12 +1,11 @@
 import torch
 import config
 import os
-import utils
+import util
 from tqdm import tqdm
 from data import YoloPascalVocDataset
-from models import *
+from model import *
 from torch.utils.data import DataLoader
-
 
 MODEL_DIR = 'models/yolo_v1/08_19_2022/08_42_58'
 

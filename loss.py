@@ -2,7 +2,7 @@ import torch
 import config
 from torch import nn as nn
 from torch.nn import functional as F
-from utils import get_iou, bbox_attr
+from util import get_iou, bbox_attr
 
 
 class SumSquaredErrorLoss(nn.Module):
@@ -13,20 +13,20 @@ class SumSquaredErrorLoss(nn.Module):
 
     def forward(self, p, a):
         # Calculate IOU of each predicted bbox against the ground truth bbox
-        iou = get_iou(p, a)                     # (batch, S, S, B, B)
-        max_iou = torch.max(iou, dim=-1)[0]     # (batch, S, S, B)
+        iou = get_iou(p, a)  # (batch, S, S, B, B)
+        max_iou = torch.max(iou, dim=-1)[0]  # (batch, S, S, B)
 
         # Get masks
         bbox_mask = bbox_attr(a, 4) > 0.0
         p_template = bbox_attr(p, 4) > 0.0
-        obj_i = bbox_mask[..., 0:1]         # 1 if grid I has any object at all
-        responsible = torch.zeros_like(p_template).scatter_(       # (batch, S, S, B)
+        obj_i = bbox_mask[..., 0:1]  # 1 if grid I has any object at all
+        responsible = torch.zeros_like(p_template).scatter_(  # (batch, S, S, B)
             -1,
-            torch.argmax(max_iou, dim=-1, keepdim=True),                # (batch, S, S, B)
-            value=1                         # 1 if bounding box is "responsible" for predicting the object
+            torch.argmax(max_iou, dim=-1, keepdim=True),  # (batch, S, S, B)
+            value=1  # 1 if bounding box is "responsible" for predicting the object
         )
-        obj_ij = obj_i * responsible        # 1 if object exists AND bbox is responsible
-        noobj_ij = ~obj_ij                  # Otherwise, confidence should be 0
+        obj_ij = obj_i * responsible  # 1 if object exists AND bbox is responsible
+        noobj_ij = ~obj_ij  # Otherwise, confidence should be 0
 
         # XY position losses
         x_losses = mse_loss(

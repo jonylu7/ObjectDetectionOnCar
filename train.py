@@ -5,18 +5,21 @@ from tqdm import tqdm
 from datetime import datetime
 from torch.utils.tensorboard import SummaryWriter
 from torch.utils.data import DataLoader
-from data import YoloPascalVocDataset
+from torchvision import transforms
+from data import BoundingBoxDataset
 from loss import SumSquaredErrorLoss
-from models import *
+from model import *
 
-
-if __name__ == '__main__':      # Prevent recursive subprocess creation
+if __name__ == '__main__':  # Prevent recursive subprocess creation
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    torch.autograd.set_detect_anomaly(True)         # Check for nan loss
+    torch.autograd.set_detect_anomaly(True)  # Check for nan loss
     writer = SummaryWriter()
     now = datetime.now()
 
-    model = YOLOv1ResNet().to(device)
+    # model = YOLOv1ResNet().to(device)
+    # jonylu7: load pretrained and newest yolo model
+    model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
+
     loss_function = SumSquaredErrorLoss()
 
     # Adam works better
@@ -38,8 +41,15 @@ if __name__ == '__main__':      # Prevent recursive subprocess creation
     # )
 
     # Load the dataset
-    train_set = YoloPascalVocDataset('train', normalize=True, augment=True)
-    test_set = YoloPascalVocDataset('test', normalize=True, augment=True)
+    # train_set = YoloPascalVocDataset('train', normalize=True, augment=True)
+    # test_set = YoloPascalVocDataset('test', normalize=True, augment=True)
+
+    # jonylu7: custom loader
+    transform = transforms.Compose([
+        transforms.ToTensor()
+    ])
+    train_set = BoundingBoxDataset(csv_file='data/train_annotations.csv', root_dir='data/images/', transform=transform)
+    test_set = BoundingBoxDataset(csv_file='data/test_annotations.csv', root_dir='data/images/', transform=transform)
 
     train_loader = DataLoader(
         train_set,
@@ -88,7 +98,7 @@ if __name__ == '__main__':      # Prevent recursive subprocess creation
     for epoch in tqdm(range(config.WARMUP_EPOCHS + config.EPOCHS), desc='Epoch'):
         model.train()
         train_loss = 0
-        for data, labels, _ in tqdm(train_loader, desc='Train', leave=False):
+        for data, labels, _ in tqdm(train_loader):
             data = data.to(device)
             labels = labels.to(device)
 
