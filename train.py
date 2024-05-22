@@ -98,7 +98,8 @@ if __name__ == '__main__':  # Prevent recursive subprocess creation
     for epoch in tqdm(range(config.WARMUP_EPOCHS + config.EPOCHS), desc='Epoch'):
         model.train()
         train_loss = 0
-        for data, labels, _ in tqdm(train_loader):
+
+        for data, labels in tqdm(train_loader):
             data = data.to(device)
             labels = labels.to(device)
 
