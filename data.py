@@ -32,9 +32,9 @@ class BoundingBoxDataset(Dataset):
         boxes = torch.tensor(boxes, dtype=torch.float32)
 
         # Creating a dictionary to store the image and bounding boxes
-        sample = {'image': image, 'boxes': boxes}
+        # sample = {'image': image, 'boxes': boxes}
 
-        return sample
+        return (image, boxes)
 
 
 if __name__ == '__main__':
@@ -51,15 +51,16 @@ if __name__ == '__main__':
 
     ## seperate train and test
     annotations = pd.read_csv('data/annotations.csv')
-    train_annotations, test_annotations = train_test_split(annotations, test_size=0.2, random_state=42)
-    train_annotations.to_csv('data/train_annotations.csv', index=False)
-    test_annotations.to_csv('data/test_annotations.csv', index=False)
+    ##train_annotations, test_annotations = train_test_split(annotations, test_size=0.2, random_state=42)
+    ##train_annotations.to_csv('data/train_annotations.csv', index=False)
+    ##test_annotations.to_csv('data/test_annotations.csv', index=False)
 
     # Create DataLoader
-    dataloader = DataLoader(dataset, batch_size=4, shuffle=True, num_workers=4)
+    dataloader = DataLoader(dataset, batch_size=10, shuffle=True, num_workers=4)
 
     # Iterate through the DataLoader
-    # for batch in dataloader:
-    # images = batch['image']
-    # boxes = batch['boxes']
-    # print(images.shape, boxes.shape)
+    # or image, box in dataloader:
+    # print(image)
+    # print(box)
+    # print(image.shape, box.shape)
+    # print("\n")

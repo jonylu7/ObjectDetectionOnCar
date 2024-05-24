@@ -16,9 +16,9 @@ if __name__ == '__main__':  # Prevent recursive subprocess creation
     writer = SummaryWriter()
     now = datetime.now()
 
-    # model = YOLOv1ResNet().to(device)
+    model = YOLOv1ResNet().to(device)
     # jonylu7: load pretrained and newest yolo model
-    model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
+    # model = torch.hub.load('ultralytics/yolov5', 'yolov5s', pretrained=True)
 
     loss_function = SumSquaredErrorLoss()
 
