@@ -33,6 +33,7 @@ class BoundingBoxDataset(Dataset):
 
         # Creating a dictionary to store the image and bounding boxes
         sample = {'image': image, 'boxes': boxes}
+        print(self.annotations)
 
         return sample
 
@@ -59,7 +60,8 @@ if __name__ == '__main__':
     dataloader = DataLoader(dataset, batch_size=4, shuffle=True, num_workers=4)
 
     # Iterate through the DataLoader
-    # for batch in dataloader:
-    # images = batch['image']
-    # boxes = batch['boxes']
-    # print(images.shape, boxes.shape)
+    for batch in dataloader:
+        images = batch['image']
+        boxes = batch['boxes']
+        ##class: car
+        ##print(images.shape, boxes.shape)
