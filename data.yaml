@@ -1,19 +1,16 @@
 names:
-- 2-wheeler
-- Auto
-- Car
-- Cycle
-- HCV
-- LCV
-- Person
-- Truck
-nc: 8
+- beware-pedastrian
+- maxspeed
+- no-entry
+- stop
+- turn-left
+nc: 5
 roboflow:
   license: CC BY 4.0
-  project: mtp-vehicles
-  url: https://universe.roboflow.com/manas-mtp/mtp-vehicles/dataset/27
-  version: 27
-  workspace: manas-mtp
+  project: tw-traffic-sign
+  url: https://universe.roboflow.com/t-2jhay/tw-traffic-sign/dataset/5
+  version: 5
+  workspace: t-2jhay
 test: ../test/images
-train: MTP-Vehicles-27/train/images
-val: MTP-Vehicles-27/valid/images
+train: TW-Traffic-Sign-5/train/images
+val: TW-Traffic-Sign-5/valid/images
